@@ -1,0 +1,194 @@
+basePath: /api
+definitions:
+  api.errorResponse:
+    properties:
+      error:
+        example: error message
+        type: string
+    type: object
+  api.successResponse:
+    properties:
+      message:
+        example: success
+        type: string
+    type: object
+  entity.Person:
+    properties:
+      age:
+        example: 70
+        maximum: 120
+        minimum: 0
+        type: integer
+      gender:
+        enum:
+        - male
+        - female
+        example: male
+        type: string
+      id:
+        example: 1
+        type: integer
+      name:
+        example: Ivan
+        type: string
+      nationality:
+        example: RU
+        type: string
+      patronymic:
+        example: Sergeevich
+        type: string
+      surname:
+        example: Ivanov
+        type: string
+    required:
+    - name
+    - surname
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: Сервис хранения персональных данных.
+  title: FIOService API
+  version: "1.0"
+paths:
+  /people/get:
+    get:
+      consumes:
+      - application/json
+      description: get a list of people with pagination and sorting
+      operationId: getPeople
+      parameters:
+      - description: Page number (default is 1)
+        in: query
+        name: page
+        type: integer
+      - description: Number of items per page (default is 10)
+        in: query
+        name: limit
+        type: integer
+      - description: Sorting field (default is 'date')
+        in: query
+        name: sortBy
+        type: string
+      - description: Sorting order (default is 'asc')
+        in: query
+        name: sortOrder
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of people
+          schema:
+            items:
+              $ref: '#/definitions/entity.Person'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.errorResponse'
+      summary: get list of people
+      tags:
+      - People
+  /person/create:
+    post:
+      consumes:
+      - application/json
+      description: create a new person
+      operationId: createPerson
+      parameters:
+      - description: person info
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/entity.Person'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/api.successResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.errorResponse'
+      summary: addPerson
+      tags:
+      - People
+  /person/delete/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: delete a person
+      operationId: deletePerson
+      parameters:
+      - description: ID of the person to delete
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.successResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.errorResponse'
+      summary: deletePerson
+      tags:
+      - People
+  /person/update/{id}:
+    put:
+      consumes:
+      - application/json
+      description: update a person
+      operationId: updatePerson
+      parameters:
+      - description: ID of the person to update
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: person info
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/entity.Person'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.successResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.errorResponse'
+      summary: updatePerson
+      tags:
+      - People
+swagger: "2.0"

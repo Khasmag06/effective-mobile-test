@@ -10,6 +10,13 @@ import (
 	"log"
 )
 
+// @Title FIOService API
+// @Description Сервис хранения персональных данных.
+// @Version 1.0
+
+// @BasePath /api
+// @Host localhost:8080
+
 func main() {
 	// configuration
 	cfg, err := config.NewConfig()

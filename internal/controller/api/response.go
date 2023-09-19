@@ -5,11 +5,11 @@ import (
 )
 
 type successResponse struct {
-	Message string `json:"message"`
+	Message string `json:"message" example:"success"`
 }
 
 type errorResponse struct {
-	Error string `json:"error"`
+	Error string `json:"error" example:"error message"`
 }
 
 func writeSuccessResponse(c *gin.Context, statusCode int, msg string) {

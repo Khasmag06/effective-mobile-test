@@ -15,7 +15,18 @@ const (
 	defaultPageNumber      = 1
 )
 
-func (h *Handler) AddPerson(c *gin.Context) {
+// @Tags People
+// @Summary addPerson
+// @Description create a new person
+// @ID createPerson
+// @Accept  json
+// @Produce json
+// @Param input body entity.Person true "person info"
+// @Success 201 {object} successResponse
+// @Failure 400 {object} errorResponse
+// @Failure 500 {object} errorResponse
+// @Router /person/create [post]
+func (h *Handler) addPerson(c *gin.Context) {
 	ctx := context.Background()
 	var personReq entity.Person
 	if err := c.Bind(&personReq); err != nil {
@@ -38,7 +49,21 @@ func (h *Handler) AddPerson(c *gin.Context) {
 
 }
 
-func (h *Handler) GetPeople(c *gin.Context) {
+// @Tags People
+// @Summary get list of people
+// @Description get a list of people with pagination and sorting
+// @ID getPeople
+// @Accept json
+// @Produce json
+// @Param page query int false "Page number (default is 1)"
+// @Param limit query int false "Number of items per page (default is 10)"
+// @Param sortBy query string false "Sorting field (default is 'date')"
+// @Param sortOrder query string false "Sorting order (default is 'asc')"
+// @Success 200 {array} entity.Person "List of people"
+// @Failure 400 {object} errorResponse
+// @Failure 500 {object} errorResponse
+// @Router /people/get [get]
+func (h *Handler) getPeople(c *gin.Context) {
 	page, err := strconv.Atoi(c.Query("page"))
 	if err != nil || page <= 0 {
 		page = defaultPageNumber
@@ -62,7 +87,19 @@ func (h *Handler) GetPeople(c *gin.Context) {
 	c.JSON(http.StatusOK, people)
 }
 
-func (h *Handler) UpdatePerson(c *gin.Context) {
+// @Tags People
+// @Summary updatePerson
+// @Description update a person
+// @ID updatePerson
+// @Accept  json
+// @Produce json
+// @Param id path int64 true "ID of the person to update"
+// @Param input body entity.Person true "person info"
+// @Success 200 {object} successResponse
+// @Failure 400 {object} errorResponse
+// @Failure 500 {object} errorResponse
+// @Router /person/update/{id} [put]
+func (h *Handler) updatePerson(c *gin.Context) {
 	personID, err := parseID(c.Param("id"))
 	if err != nil {
 		h.logger.Error(err.Error())
@@ -95,7 +132,18 @@ func (h *Handler) UpdatePerson(c *gin.Context) {
 	writeSuccessResponse(c, http.StatusOK, "success")
 }
 
-func (h *Handler) DeletePerson(c *gin.Context) {
+// @Tags People
+// @Summary deletePerson
+// @Description delete a person
+// @ID deletePerson
+// @Accept  json
+// @Produce json
+// @Param id path int64 true "ID of the person to delete"
+// @Success 200 {object} successResponse
+// @Failure 400 {object} errorResponse
+// @Failure 500 {object} errorResponse
+// @Router /person/delete/{id} [delete]
+func (h *Handler) deletePerson(c *gin.Context) {
 	personID, err := parseID(c.Param("id"))
 	if err != nil {
 		h.logger.Error(err.Error())

@@ -7,6 +7,10 @@ import (
 	"github.com/khasmag06/effective-mobile-test/internal/entity"
 	"github.com/khasmag06/effective-mobile-test/pkg/validator"
 	"strconv"
+
+	_ "github.com/khasmag06/effective-mobile-test/docs"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 var ErrInvalidID = errors.New("invalid person id")
@@ -43,12 +47,14 @@ func NewHandler(ps peopleService, l logger) *Handler {
 
 	h.Use(gin.Recovery())
 
+	h.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+
 	api := h.Group("/api")
 
-	api.GET("people/get", h.GetPeople)
-	api.POST("person/create", h.AddPerson)
-	api.DELETE("person/delete/:id", h.DeletePerson)
-	api.PUT("person/update/:id", h.UpdatePerson)
+	api.GET("people/get", h.getPeople)
+	api.POST("person/create", h.addPerson)
+	api.DELETE("person/delete/:id", h.deletePerson)
+	api.PUT("person/update/:id", h.updatePerson)
 
 	return h
 
