@@ -3,7 +3,10 @@ package api
 import (
 	"context"
 	"errors"
+	"github.com/99designs/gqlgen/graphql/handler"
+	"github.com/99designs/gqlgen/graphql/playground"
 	"github.com/gin-gonic/gin"
+	"github.com/khasmag06/effective-mobile-test/internal/controller/graph"
 	"github.com/khasmag06/effective-mobile-test/internal/entity"
 	"github.com/khasmag06/effective-mobile-test/pkg/validator"
 	"strconv"
@@ -47,6 +50,14 @@ func NewHandler(ps peopleService, l logger) *Handler {
 
 	h.Use(gin.Recovery())
 
+	srv := handler.NewDefaultServer(graph.NewExecutableSchema(graph.Config{Resolvers: &graph.Resolver{}}))
+
+	// GraphQL
+	h.GET("/playground", gin.WrapH(playground.Handler("GraphQL playground", "/query")))
+
+	h.POST("/query", gin.WrapH(srv))
+
+	// Swagger
 	h.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	api := h.Group("/api")
