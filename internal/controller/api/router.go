@@ -27,8 +27,6 @@ type peopleService interface {
 
 type logger interface {
 	Info(text ...any)
-	Infof(format string, args ...any)
-	Warn(text ...any)
 	Error(text ...any)
 	Errorf(format string, args ...any)
 }
@@ -50,7 +48,7 @@ func NewHandler(ps peopleService, l logger) *Handler {
 
 	h.Use(gin.Recovery())
 
-	srv := handler.NewDefaultServer(graph.NewExecutableSchema(graph.Config{Resolvers: &graph.Resolver{}}))
+	srv := handler.NewDefaultServer(graph.NewExecutableSchema(graph.Config{Resolvers: graph.NewResolver(ps, l)}))
 
 	// GraphQL
 	h.GET("/playground", gin.WrapH(playground.Handler("GraphQL playground", "/query")))
